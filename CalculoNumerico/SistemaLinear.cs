@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CalculoNumerico
 {
     public class SistemaLinear
     {
-        public static double[] SolucionarEquacaoLinear(double[,] matrizGeral)
+        public static List<double> SolucionarEquacaoLinear(double[,] matrizGeral)
         {
             if (matrizGeral.GetLength(0) + 1 == matrizGeral.GetLength(1))
             {
@@ -55,9 +54,9 @@ namespace CalculoNumerico
                     }
                 }
 
-                double[] solucao = new double[numEquacoes];
+                List<double> solucao = new List<double>();
                 for (int j = 0; j < numEquacoes; j++)
-                    solucao[j] = matrizGeral[j, numEquacoes];
+                    solucao.Add(matrizGeral[j, numEquacoes]);
 
                 return solucao;
             }

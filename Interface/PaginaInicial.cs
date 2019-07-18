@@ -26,76 +26,54 @@ namespace Interface
         }
 
         private void Calcular_Click(object sender, EventArgs e)
-        {
-            if (!(dataGridView1.RowCount == 1 && (Convert.ToString(dataGridView1.Rows[0].Cells[0].Value) == string.Empty || Convert.ToString(dataGridView1.Rows[0].Cells[1].Value) == string.Empty)))
+        {     
+            try
             {
-                try
+                List<double> xi = new List<double>();
+                List<double> yi = new List<double>();
+                for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
-                    List<double> xi = new List<double>();
-                    List<double> yi = new List<double>();
-                    for (int i = 0; i < dataGridView1.RowCount; i++)
+                    if (dataGridView1.Rows[i].Cells[0].Value != null && dataGridView1.Rows[i].Cells[1].Value != null)
                     {
-                        if (dataGridView1.Rows[i].Cells[0].Value != null && dataGridView1.Rows[i].Cells[1].Value != null)
-                        {
-                            xi.Add(Convert.ToDouble(dataGridView1.Rows[i].Cells[0].Value));
-                            yi.Add(Convert.ToDouble(dataGridView1.Rows[i].Cells[1].Value));
-                        }
+                        xi.Add(Convert.ToDouble(dataGridView1.Rows[i].Cells[0].Value));
+                        yi.Add(Convert.ToDouble(dataGridView1.Rows[i].Cells[1].Value));
                     }
+                }
+
+                if(xi.Count() == 0 || yi.Count() == 0)
+                {
+                    MessageBox.Show($"UM OU MAIS CAMPOS OBRIGATÓRIOS NÃO FORAM PREENCHIDOS!");
+                }                 
+                else
+                {
                     int grau = Convert.ToInt32(numGrauPolinomio.Value);
                     Xi = xi;
                     Yi = yi;
 
-                    Arrumar(xi, yi, grau);
-                }
-                catch (FormatException)
-                {
-                    MessageBox.Show($"UM OU MAIS VALORES INFORMADOS NÃO ESTAVAM NO FORMATO CORRETO!");
-                    LimparGeral();
-                }
-                catch (Exception erro2)
-                {
-                    MessageBox.Show($"ATENÇÃO:\n\n{erro2.Message}");
-                    LimparGeral();
-                }
+                    CalcularResposta(xi, yi, grau);
+                }                   
             }
-            else
-                MessageBox.Show($"UM OU MAIS CAMPOS OBRIGATÓRIOS NÃO FORAM PREENCHIDOS!");
-
-        }
-
-        private void Arrumar(List<double> auxXi, List<double> auxYi, int grau)
-        {
-            Double[] xi = new double[auxXi.Count()];
-            Double[] yi = new double[auxXi.Count()];
-            for (int i = 0; i < auxXi.Count(); i++)
+            catch (FormatException)
             {
-                xi[i] = auxXi[i];
-                yi[i] = auxYi[i];
+                MessageBox.Show($"UM OU MAIS VALORES INFORMADOS NÃO ESTAVAM NO FORMATO CORRETO!");
+                LimparGeral();
             }
-
-            CalcularResposta(xi, yi, grau);
+            catch (Exception erro2)
+            {
+                MessageBox.Show($"ATENÇÃO:\n\n{erro2.Message}");
+                LimparGeral();
+            }               
         }
 
-        private void CalcularResposta(double[] xi, double[] yi, int grau)
+        private void CalcularResposta(List<double> xi, List<double> yi, int grau)
         {
             Resposta.Clear();
 
-            foreach (var item in MinimosQuadrados.SolucaoMMQ(grau, xi, yi))
-            {
-                Resposta.Add(item);
-            }
-            double erro = MinimosQuadrados.CalculoDoErro(yi, xi, ConverterVetor(Resposta));
-            PreencherRespostas(Resposta, erro);
-        }
+            Resposta = MinimosQuadrados.SolucaoMMQ(grau, xi, yi);
+            
+            double erro = MinimosQuadrados.CalculoDoErro(yi, xi, Resposta);
 
-        private double[] ConverterVetor(List<Double> resposta)
-        {
-            double[] vetor = new double[resposta.Count()];
-            for (int i = 0; i < resposta.Count(); i++)
-            {
-                vetor[i] = resposta[i];
-            }
-            return vetor;
+            PreencherRespostas(Resposta, erro);
         }
 
         private void PreencherRespostas(List<double> resposta, double erro)
@@ -144,7 +122,7 @@ namespace Interface
             try
             {
                 double x = Convert.ToDouble(txtValorX.Text);
-                txtResultadoX.Text = AdaptarCasasDecimais((MinimosQuadrados.Aproximar(ConverterVetor(Resposta), x)));
+                txtResultadoX.Text = AdaptarCasasDecimais((MinimosQuadrados.Aproximar(Resposta, x)));
             }
             catch (Exception)
             {
