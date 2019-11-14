@@ -112,9 +112,9 @@
     <None Include="Resources\iconfinder_Analytics_balls_206462.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CalculoNumerico\CalculoNumerico.csproj">
-      <Project>{6f70fa05-3088-4864-a044-9b93639fa416}</Project>
-      <Name>CalculoNumerico</Name>
+    <ProjectReference Include="..\MinimosQuadrados\MinimosQuadrados.csproj">
+      <Project>{936e328b-23cf-4bda-98fa-33e122df7016}</Project>
+      <Name>MinimosQuadrados</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
